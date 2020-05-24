@@ -24,5 +24,7 @@ namespace Assets.Scripts.Vizzy {
         IReadOnlyDictionary<String, VizzyGLObject> Objects { get; }
 
         void AddObject(VizzyGLObject gameObject);
+
+        void RemoveObject(String name);
     }
 }

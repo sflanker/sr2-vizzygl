@@ -12,9 +12,9 @@
         <style id="gl-set-origin" color="GLContextInstruction" format="set origin [origin] (0)" tooltip="Set the type of origin to use when drawing new shapes either by planet name or craft id." />
         <style id="gl-set-view" color="GLContextInstruction" format="set target view [view]" tooltip="Set the target view to use when drawing new shapes." />
         <style id="gl-draw-primitive" color="GLDrawInstruction" format="draw [type] with offset (0) as (1)" tooltip="Adds a new primitive to the flight scene or map view." />
-        <style id="gl-update-property" color="GLDrawInstruction" format="update primitive (0) property [prop] to (1)" tooltip="Updates a property of an existing primitive by name." />
+        <style id="gl-update-property" color="GLDrawInstruction" format="update object (0) property [prop] to (1)" tooltip="Updates a property of an existing primitive by name." />
+        <style id="gl-remove-object" color="GLDrawInstruction" format="remove object (0)" tooltip="Remove an object by name from the flight scene or map view." />
     </Styles>
-    <Styles />
     <Categories>
         <Category name="Vizzy GL" icon="VizzyGL/Sprites/VizzyGL">
             <SetContextProperty style="gl-set-color" prop="color">
@@ -45,6 +45,10 @@
                 <Constant text="name" />
                 <Constant vector="0,1,0" />
             </UpdateObject>
+
+            <RemoveObject style="gl-remove-object">
+                <Constant text="name" />
+            </RemoveObject>
         </Category>
     </Categories>
 </VizzyToolbox>

@@ -45,6 +45,7 @@ namespace Assets.Scripts {
                 { SetContextPropertyInstruction.XmlName, (typeof(SetContextPropertyInstruction), () => new SetContextPropertyInstruction()) },
                 { DrawPrimitiveInstruction.XmlName, (typeof(DrawPrimitiveInstruction), () => new DrawPrimitiveInstruction()) },
                 { UpdateObjectInstruction.XmlName, (typeof(UpdateObjectInstruction), () => new UpdateObjectInstruction()) },
+                { RemoveObjectInstruction.XmlName, (typeof(RemoveObjectInstruction), () => new RemoveObjectInstruction()) },
             };
 
             VizzyToolboxColorsField =

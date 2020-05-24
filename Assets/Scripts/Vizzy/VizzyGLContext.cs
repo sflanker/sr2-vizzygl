@@ -79,6 +79,17 @@ namespace Assets.Scripts.Vizzy {
             }
         }
 
+        public void RemoveObject(String objectName) {
+            lock (this.Data.Objects) {
+                if (this.Data.Objects.TryGetValue(objectName, out var existing)) {
+                    existing.DestroyGameObject();
+                    this.Data.Objects.Remove(objectName);
+                } else {
+                    Debug.Log($"Unable to remove object, not found: {objectName}");
+                }
+            }
+        }
+
         public void DestroyScript() {
             // Unload objects
             lock (this.Data.Objects) {
