@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<VizzyToolbox>
+    <Colors>
+        <Color id="GLContextInstruction" color="#546b50ff" />
+        <Color id="GLDrawInstruction" color="#236b19ff" />
+    </Colors>
+    <Styles>
+        <Style id="gl-set-color" color="GLContextInstruction" format="set color (0)" tooltip="Set the color to use when drawing new shapes." />
+        <Style id="gl-set-opacity" color="GLContextInstruction" format="set opacity (0)" tooltip="Set the opacity to use when drawing new shapes." />
+        <style id="gl-set-scale" color="GLContextInstruction" format="set scale (0)" tooltip="Set the scale factor to use when drawing new shapes." />
+        <style id="gl-set-rotation" color="GLContextInstruction" format="set rotation (0)" tooltip="Set the rotation to use when drawing new shapes." />
+        <style id="gl-set-origin" color="GLContextInstruction" format="set origin [origin] (0)" tooltip="Set the type of origin to use when drawing new shapes either by planet name or craft id." />
+        <style id="gl-set-view" color="GLContextInstruction" format="set target view [view]" tooltip="Set the target view to use when drawing new shapes." />
+        <style id="gl-draw-primitive" color="GLDrawInstruction" format="draw [type] with offset (0) as (1)" tooltip="Adds a new primitive to the flight scene or map view." />
+        <style id="gl-update-property" color="GLDrawInstruction" format="update primitive (0) property [prop] to (1)" tooltip="Updates a property of an existing primitive by name." />
+    </Styles>
+    <Styles />
+    <Categories>
+        <Category name="Vizzy GL" icon="VizzyGL/Sprites/VizzyGL">
+            <SetContextProperty style="gl-set-color" prop="color">
+                <Constant vector="1,0,0" />
+            </SetContextProperty>
+            <SetContextProperty style="gl-set-opacity" prop="opacity">
+                <Constant number="1.0" />
+            </SetContextProperty>
+            <SetContextProperty style="gl-set-scale" prop="scale">
+                <Constant vector="1,1,1" />
+            </SetContextProperty>
+            <SetContextProperty style="gl-set-rotation" prop="rotation">
+                <Constant vector="1,0,0" />
+            </SetContextProperty>
+            <SetContextProperty style="gl-set-origin" prop="origin" origin="craft">
+                <Constant text="" />
+            </SetContextProperty>
+
+            <SetContextProperty style="gl-set-view" prop="view" view="flight">
+            </SetContextProperty>
+
+            <DrawPrimitive style="gl-draw-primitive" type="sphere">
+                <Constant vector="0,0,0" />
+                <Constant text="name" />
+            </DrawPrimitive>
+
+            <UpdateObject style="gl-update-property" prop="color">
+                <Constant text="name" />
+                <Constant vector="0,1,0" />
+            </UpdateObject>
+        </Category>
+    </Categories>
+</VizzyToolbox>
