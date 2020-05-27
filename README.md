@@ -16,7 +16,6 @@ Graphics can be removed from the scene using the `Remove Object` instruction.
 
 ## TODO
 
-* __Support for displaying objects in Map view.__
 * Line graphics (lines between two anchored points, like from Craft A to Craft B)
 * More primitives:
     * Cone
@@ -28,4 +27,4 @@ Graphics can be removed from the scene using the `Remove Object` instruction.
 
 ## Known Issues
 
-* Graphics disappear after relaunching.
+* ...
