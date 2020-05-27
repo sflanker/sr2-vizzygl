@@ -1,6 +1,8 @@
 using System;
 using System.Linq;
 using Assets.Scripts.Behaviours;
+using Assets.Scripts.Flight.MapView;
+using Assets.Scripts.Vizzy;
 using JetBrains.Annotations;
 using ModApi.Craft;
 using ModApi.Flight.Sim;
@@ -12,34 +14,26 @@ namespace Assets.Scripts.Objects {
         private static Material DefaultMaterial =
             ModApi.Common.Game.Instance.UserInterface.ResourceDatabase.GetResource<Material>("VizzyGL/DefaultMaterial");
 
-        [SerializeField]
-        private Vector3 _color;
+        [SerializeField] private Vector3 _color;
 
-        [SerializeField]
-        private Single _opacity;
+        [SerializeField] private Single _opacity;
 
-        [SerializeField]
-        private Vector3 _scale;
+        [SerializeField] private Vector3 _scale;
 
-        [SerializeField]
-        private Vector3 _rotation;
+        [SerializeField] private Vector3 _rotation;
 
-        [SerializeField]
-        private String _name;
+        [SerializeField] private String _name;
         public String Name => this._name;
 
-        [SerializeField]
-        private PositionType _originPositionType;
+        [SerializeField] private PositionType _originPositionType;
         public PositionType OriginPositionType => this._originPositionType;
 
-        [SerializeField]
-        private Vector3d _originOffset;
+        [SerializeField] private Vector3d _originOffset;
 
         [SerializeField] private String _originPlanetName;
         [SerializeField] private Int32 _originCraftId;
 
-        [SerializeField]
-        private ViewType _view;
+        [SerializeField] private ViewType _view;
         public ViewType View => this._view;
 
         public GameObject GameObject { get; private set; }
@@ -107,7 +101,6 @@ namespace Assets.Scripts.Objects {
             ViewType view,
             PositionType originPositionType,
             String originPlanetName) {
-
             this._name = name;
             this._view = view;
             this._originPositionType = originPositionType;
@@ -119,23 +112,17 @@ namespace Assets.Scripts.Objects {
             ViewType view,
             PositionType originPositionType,
             Int32 originCraftId) {
-
             this._name = name;
             this._view = view;
             this._originPositionType = originPositionType;
             this._originCraftId = originCraftId;
         }
 
-        public void Initialize([NotNull] ICraftScript craft) {
+        public void Initialize([NotNull] ICraftScript craft, Boolean createGameObject) {
             this.Craft = craft ?? throw new ArgumentNullException(nameof(craft));
 
-            if (this.Craft == null) {
-                Debug.Log($"Unable to create {nameof(UnityEngine.GameObject)} for uninitialized {this.GetType().Name}. Name: '{this.Name}'");
-            }
-            this.GameObject = this.CreateGameObject();
-            if (this.GameObject != null) {
-                this.Renderer = this.GameObject.GetComponent<Renderer>();
-                this.OnInitialized();
+            if (createGameObject) {
+                this.InitializeGameObject();
             }
         }
 
@@ -143,14 +130,27 @@ namespace Assets.Scripts.Objects {
             this.Craft = craft ?? throw new ArgumentNullException(nameof(craft));
         }
 
+        public void InitializeGameObject() {
+            if (this.Craft == null) {
+                Debug.LogError($"Unable to create {nameof(UnityEngine.GameObject)} for uninitialized {this.GetType().Name}. Name: '{this.Name}'");
+            } else if(this.GameObject == null) {
+                this.GameObject = this.CreateGameObject();
+                if (this.GameObject != null) {
+                    this.Renderer = this.GameObject.GetComponent<Renderer>();
+                    this.OnGameObjectCreated();
+                }
+            }
+        }
+
         public void DestroyGameObject() {
             if (this.GameObject != null) {
+                Debug.Log($"Destroying GameObject for VizzyGLObject {this.Name}");
                 UnityEngine.Object.Destroy(this.GameObject);
                 this.GameObject = null;
             }
         }
 
-        protected virtual void OnInitialized() {
+        protected virtual void OnGameObjectCreated() {
             Debug.Log($"VizzyGL Object Initialized (Origin: {this._originPositionType} + {this._originOffset})");
 
             this.Renderer.material = new Material(DefaultMaterial) {
@@ -161,11 +161,12 @@ namespace Assets.Scripts.Objects {
                     this._opacity
                 )
             };
+
+            if (this.View == ViewType.Map) {
+                this.GameObject.layer = VizzyGLContext.ObjectContainerProvider.Crafts.gameObject.layer;
+            }
             this.GameObject.transform.localScale = this._scale;
-            this.GameObject.transform.rotation = Quaternion.Euler(this._rotation);
-            this.GameObject.transform.position =
-                Game.Instance.FlightScene.ViewManager.GameView.ReferenceFrame.PlanetToFramePosition(
-                    this.Craft.CraftNode.Position);
+            this.GameObject.transform.localRotation = Quaternion.Euler(this._rotation);
 
             // Attach positioning behavior
             this.AttachBehaviors();
@@ -173,6 +174,7 @@ namespace Assets.Scripts.Objects {
 
         protected virtual void AttachBehaviors() {
             OriginOffsetPositionBehaviour behavior;
+
             switch (this._originPositionType) {
                 case PositionType.CraftLocal:
                     behavior = this.GameObject.AddComponent<CraftLocalPositionBehaviour>();
@@ -181,11 +183,11 @@ namespace Assets.Scripts.Objects {
                 case PositionType.PlanetPCI:
                     behavior = this.GameObject.AddComponent<PCIPositionBehaviour>();
                     break;
-                case PositionType.PlanetLatLogAgl:
-                    behavior = this.GameObject.AddComponent<PlanetLatLogAglPositionBehaviour>();
+                case PositionType.PlanetLatLogAsl:
+                    behavior = this.GameObject.AddComponent<PlanetLatLogAslPositionBehaviour>();
                     break;
                 default:
-                    Debug.Log($"Unrecognized origin type: {this._originPositionType}");
+                    Debug.LogWarning($"Unrecognized origin type: {this._originPositionType}");
                     return;
             }
 
@@ -224,7 +226,7 @@ namespace Assets.Scripts.Objects {
             }
         }
 
-        protected virtual void OnRotationChanged () {
+        protected virtual void OnRotationChanged() {
             if (this.GameObject != null) {
                 this.GameObject.transform.localRotation = Quaternion.Euler(this._rotation);
             }
@@ -236,9 +238,9 @@ namespace Assets.Scripts.Objects {
             switch (this._originPositionType) {
                 case PositionType.CraftLocal:
                 case PositionType.CraftPCI:
-                    return Game.Instance.FlightScene.FlightState.CraftNodes.FirstOrDefault(c => c.NodeId == this._originCraftId);
+                    return Game.Instance.FlightScene.FlightState.CraftNodes.SingleOrDefault(c => c.NodeId == this._originCraftId);
                 case PositionType.PlanetPCI:
-                case PositionType.PlanetLatLogAgl:
+                case PositionType.PlanetLatLogAsl:
                     return Game.Instance.FlightScene.FlightState.RootNode.FindPlanet(this._originPlanetName);
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -255,7 +257,7 @@ namespace Assets.Scripts.Objects {
     }
 
     public enum ViewType {
-        Flight,
+        Game = 1,
         Map
     }
 
@@ -263,6 +265,6 @@ namespace Assets.Scripts.Objects {
         CraftLocal = 1,
         CraftPCI,
         PlanetPCI,
-        PlanetLatLogAgl,
+        PlanetLatLogAsl
     }
 }

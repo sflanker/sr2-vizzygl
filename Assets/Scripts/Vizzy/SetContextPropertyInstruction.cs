@@ -40,16 +40,16 @@ namespace Assets.Scripts.Vizzy {
                             ListItemInfoType.Text),
                         new ListItemInfo(
                             "planet-lat-long",
-                            "Planet Lat/Long/AGL",
-                            "Position objects relative to a planet with an offset in Lat/Long/AGL coordinates.",
+                            "Planet Lat/Long/ASL",
+                            "Position objects relative to a planet with an offset in Lat/Long/ASL coordinates.",
                             ListItemInfoType.Text)
                     };
                 case "view":
                     return new List<ListItemInfo> {
                         new ListItemInfo(
-                            "flight",
-                            "Flight",
-                            "Draw objects in the flight view.",
+                            "game",
+                            "Game",
+                            "Draw objects in the game view.",
                             ListItemInfoType.None),
                         new ListItemInfo(
                             "map",
@@ -98,7 +98,7 @@ namespace Assets.Scripts.Vizzy {
                             this.Origin = PositionType.PlanetPCI;
                             break;
                         case "planet-lat-long":
-                            this.Origin = PositionType.PlanetLatLogAgl;
+                            this.Origin = PositionType.PlanetLatLogAsl;
                             break;
                         default:
                             this.Origin = default;
@@ -116,8 +116,8 @@ namespace Assets.Scripts.Vizzy {
                     }
                     this._view = value.ToLowerInvariant();
                     switch (this._view) {
-                        case "flight":
-                            this.View = ViewType.Flight;
+                        case "game":
+                            this.View = ViewType.Game;
                             break;
                         case "map":
                             this.View = ViewType.Map;
@@ -150,11 +150,9 @@ namespace Assets.Scripts.Vizzy {
 
             switch (this.Property) {
                 case ContextProperty.Origin when this.Origin == default:
-                    Debug.Log("Manually deserializing _origin");
                     this.SetListValue("origin", this._origin);
                     break;
                 case ContextProperty.View when this.View == default:
-                    Debug.Log("Manually deserializing _view");
                     this.SetListValue("view", this._view);
                     break;
             }
@@ -171,22 +169,18 @@ namespace Assets.Scripts.Vizzy {
                 case ContextProperty.Color:
                     this.DrawingContext.Color =
                         this.GetExpression(0).Evaluate(context).VectorValue.ToVector3();
-                    Debug.Log($"VizzyGL Drawing Color Set To: {this.DrawingContext.Color}");
                     break;
                 case ContextProperty.Opacity:
                     this.DrawingContext.Opacity =
                         (Single)this.GetExpression(0).Evaluate(context).NumberValue;
-                    Debug.Log($"VizzyGL Drawing Opacity Set To: {this.DrawingContext.Opacity}");
                     break;
                 case ContextProperty.Scale:
                     this.DrawingContext.Scale =
                         this.GetExpression(0).Evaluate(context).VectorValue.ToVector3();
-                    Debug.Log($"VizzyGL Drawing Scale Set To: {this.DrawingContext.Scale}");
                     break;
                 case ContextProperty.Rotation:
                     this.DrawingContext.Rotation =
                         this.GetExpression(0).Evaluate(context).VectorValue.ToVector3();
-                    Debug.Log($"VizzyGL Drawing Rotation Set To: {this.DrawingContext.Rotation}");
                     break;
                 case ContextProperty.Origin when this.Origin != default:
                     this.DrawingContext.Origin = this.Origin;
@@ -195,13 +189,11 @@ namespace Assets.Scripts.Vizzy {
                         case PositionType.CraftPCI:
                             this.DrawingContext.CraftId =
                                 (Int32)this.GetExpression(0).Evaluate(context).NumberValue;
-                            Debug.Log($"VizzyGL Drawing Origin Set To: {this.DrawingContext.Origin} - Craft {this.DrawingContext.CraftId}");
                             break;
                         case PositionType.PlanetPCI:
-                        case PositionType.PlanetLatLogAgl:
+                        case PositionType.PlanetLatLogAsl:
                             this.DrawingContext.PlanetName =
                                 this.GetExpression(0).Evaluate(context).TextValue;
-                            Debug.Log($"VizzyGL Drawing Origin Set To: {this.DrawingContext.Origin} - Planet {this.DrawingContext.PlanetName}");
                             break;
                     }
 

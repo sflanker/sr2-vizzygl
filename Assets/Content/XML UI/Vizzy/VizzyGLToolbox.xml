@@ -33,7 +33,7 @@
                 <Constant text="" />
             </SetContextProperty>
 
-            <SetContextProperty style="gl-set-view" prop="view" view="flight">
+            <SetContextProperty style="gl-set-view" prop="view" view="game">
             </SetContextProperty>
 
             <DrawPrimitive style="gl-draw-primitive" type="sphere">

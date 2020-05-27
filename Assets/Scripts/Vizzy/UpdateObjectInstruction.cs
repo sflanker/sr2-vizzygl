@@ -72,7 +72,7 @@ namespace Assets.Scripts.Vizzy {
                     this.Property = MutablePrimitiveProperty.OriginOffset;
                     break;
                 default:
-                    Debug.Log($"Unrecognized object property: {this._prop}");
+                    Debug.LogWarning($"Unrecognized object property: {this._prop}");
                     this.Property = default;
                     break;
             }
@@ -90,27 +90,22 @@ namespace Assets.Scripts.Vizzy {
                 switch (this.Property) {
                     case MutablePrimitiveProperty.Color:
                         updateObject.Color = valueResult.VectorValue.ToVector3();
-                        Debug.Log($"Updated {name}.Color to {updateObject.Color}");
                         break;
                     case MutablePrimitiveProperty.Opacity:
                         updateObject.Opacity = (Single)valueResult.NumberValue;
-                        Debug.Log($"Updated {name}.Opacity to {updateObject.Opacity}");
                         break;
                     case MutablePrimitiveProperty.Scale:
                         updateObject.Scale = valueResult.VectorValue.ToVector3();
-                        Debug.Log($"Updated {name}.Scale to {updateObject.Scale}");
                         break;
                     case MutablePrimitiveProperty.Rotation:
                         updateObject.Rotation = valueResult.VectorValue.ToVector3();
-                        Debug.Log($"Updated {name}.Rotation to {updateObject.Rotation}");
                         break;
                     case MutablePrimitiveProperty.OriginOffset:
                         updateObject.OriginOffset = valueResult.VectorValue;
-                        Debug.Log($"Updated {name}.OriginOffset to {updateObject.OriginOffset}");
                         break;
                 }
             } else {
-                Debug.Log($"VizzyGL Object not found: '{name}'");
+                Debug.LogWarning($"VizzyGL Object not found: '{name}'");
             }
         }
     }

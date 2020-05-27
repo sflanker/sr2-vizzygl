@@ -25,6 +25,11 @@ namespace Assets.Scripts.Vizzy {
                     "cube",
                     "Cube",
                     "Draw a cube.",
+                    ListItemInfoType.None),
+                new ListItemInfo(
+                    "cylinder",
+                    "Cylinder",
+                    "Draw a cylinder.",
                     ListItemInfoType.None)
             };
         }
@@ -45,7 +50,7 @@ namespace Assets.Scripts.Vizzy {
                 this.Type = primType;
             } else {
                 this.Type = default;
-                Debug.Log($"Unrecognized primitive type: {value}");
+                Debug.LogWarning($"Unrecognized primitive type: {value}");
             }
         }
 
@@ -68,7 +73,7 @@ namespace Assets.Scripts.Vizzy {
                             this.DrawingContext.CraftId);
                     break;
                 case PositionType.PlanetPCI:
-                case PositionType.PlanetLatLogAgl:
+                case PositionType.PlanetLatLogAsl:
                     vizzyGlObject =
                         new VizzyGLPrimitive(
                             this.Type,

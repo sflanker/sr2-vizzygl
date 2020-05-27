@@ -32,7 +32,7 @@ namespace Assets.Scripts {
                         _vizzyGLToolbox =
                             new VizzyToolbox(XElement.Parse(vizzyGLToolboxXml.text));
                     } else {
-                        Debug.Log("VizzyGL: The VizzyGLToolbox Resource Was Not Found.");
+                        Debug.LogError("VizzyGL: The VizzyGLToolbox Resource Was Not Found.");
                     }
                 }
 
@@ -78,8 +78,6 @@ namespace Assets.Scripts {
                         var xmlName = kvp.Key;
                         var (type, ctor) = kvp.Value;
 
-                        Debug.Log($"VizzyPlusPlus: Registering Program Node {xmlName}");
-
                         var programNodeCreator =
                             programNodeCreatorConstructor.Invoke(
                                 new System.Object[] {
@@ -91,7 +89,7 @@ namespace Assets.Scripts {
                         xmlNameLookup[xmlName] = typeNameLookup[type.Name] = programNodeCreator;
                     }
                 } else {
-                    Debug.Log("VizzyGL: Constructor for ProgramNodeCreator not found.");
+                    Debug.LogError("VizzyGL: Constructor for ProgramNodeCreator not found.");
                 }
             } else {
                 Debug.LogError(
@@ -129,10 +127,10 @@ namespace Assets.Scripts {
                             VizzyGLToolbox
                         );
                     } else {
-                        Debug.Log("VizzyGL: The default Vizzy Toolbox isn't loaded yet.");
+                        Debug.LogError("VizzyGL: The default Vizzy Toolbox isn't loaded yet.");
                     }
                 } else {
-                    Debug.Log("VizzyGL: Unable to load VizzyGLToolbox.");
+                    Debug.LogError("VizzyGL: Unable to load VizzyGLToolbox.");
                 }
             }
         }
@@ -151,13 +149,11 @@ namespace Assets.Scripts {
 
             var extensionColors = (Dictionary<String, Color>)VizzyToolboxColorsField.GetValue(extensionToolbox);
             foreach (var color in extensionColors) {
-                Debug.Log($"VizzyGL: Adding new color {color.Key}");
                 baseColors[color.Key] = color.Value;
             }
 
             var extensionStyles = (Dictionary<String, NodeStyle>)VizzyToolboxStylesField.GetValue(extensionToolbox);
             foreach (var style in extensionStyles) {
-                Debug.Log($"VizzyGL: Adding new style {style.Key}");
                 baseStyles[style.Key] = style.Value;
             }
 

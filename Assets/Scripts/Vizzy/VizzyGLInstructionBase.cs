@@ -21,12 +21,14 @@ namespace Assets.Scripts.Vizzy {
 
                     if (this.DrawingContext == null) {
                         // Inject a new VizzyGLContext into the part that is running this script.
-                        Debug.Log("Initialized new VizzyGL Context");
+                        Debug.Log("Initializing new VizzyGL Context for VizzyGLInstruction.");
                         var data = new VizzyGLContextData(partScript.Data);
                         var newContext = (VizzyGLContext)data.CreateScript();
-                        newContext.Initialize(data);
 
+                        // We're haxin, we hope you like haxin too.
                         partScript.Modifiers.Add(newContext);
+                        partScript.Data.Modifiers.Add(newContext.Data);
+
                         this.DrawingContext = newContext;
                     }
                 }
