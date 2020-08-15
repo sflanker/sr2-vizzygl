@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Xml.Linq;
+using Assets.Scripts.Flight;
 using Assets.Scripts.Objects;
 using ModApi.Craft.Program;
 using UnityEngine;
@@ -187,8 +189,20 @@ namespace Assets.Scripts.Vizzy {
                     switch (this.Origin) {
                         case PositionType.CraftLocal:
                         case PositionType.CraftPCI:
-                            this.DrawingContext.CraftId =
-                                (Int32)this.GetExpression(0).Evaluate(context).NumberValue;
+                            var expression = this.GetExpression(0).Evaluate(context);
+                            if (expression.IsNumberOrNumberAsText) {
+                                this.DrawingContext.CraftId = (Int32)expression.NumberValue;
+                            } else {
+                                var matchingCraft =
+                                    FlightSceneScript.Instance.FlightState.CraftNodes
+                                        .FirstOrDefault(c =>
+                                            String.Equals(
+                                                c.Name,
+                                                expression.TextValue,
+                                                StringComparison.OrdinalIgnoreCase));
+
+                                this.DrawingContext.CraftId = matchingCraft?.NodeId ?? -1;
+                            }
                             break;
                         case PositionType.PlanetPCI:
                         case PositionType.PlanetLatLogAsl:
