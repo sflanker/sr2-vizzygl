@@ -3,7 +3,7 @@ using ModApi.Craft.Program.Instructions;
 using UnityEngine;
 
 namespace Assets.Scripts.Vizzy {
-    public abstract class VizzyGLInstructionBase : ProgramInstruction {
+    public abstract class VizzyGLInstructionBase : ProgramInstruction, IVizzyGLProgramNode {
         protected IVizzyGLContext DrawingContext { get; private set; }
 
         public override ProgramInstruction Execute(IThreadContext context) {
