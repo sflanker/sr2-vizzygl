@@ -60,6 +60,14 @@ namespace Assets.Scripts.Vizzy {
         }
 
         protected override void ExecuteImpl(IThreadContext context) {
+            var objectName = this.GetExpression(1).Evaluate(context).TextValue;
+
+            if (String.IsNullOrWhiteSpace(objectName)) {
+                Debug.LogWarning("Unable to draw VizzyGL graphic with no name.");
+                return;
+            }
+
+            Debug.Log($"Drawing Object {objectName} with Origin Type {this.DrawingContext.Origin}.");
             VizzyGLPrimitive vizzyGlObject;
             switch (this.DrawingContext.Origin) {
                 case PositionType.CraftLocal:
@@ -67,17 +75,18 @@ namespace Assets.Scripts.Vizzy {
                     vizzyGlObject =
                         new VizzyGLPrimitive(
                             this.Type,
-                            this.GetExpression(1).Evaluate(context).TextValue ?? String.Empty,
+                            objectName,
                             this.DrawingContext.View,
                             this.DrawingContext.Origin,
                             this.DrawingContext.CraftId);
                     break;
                 case PositionType.PlanetPCI:
-                case PositionType.PlanetLatLogAsl:
+                case PositionType.PlanetLatLonAsl:
+                case PositionType.PlanetLatLonAgl:
                     vizzyGlObject =
                         new VizzyGLPrimitive(
                             this.Type,
-                            this.GetExpression(1).Evaluate(context).TextValue ?? String.Empty,
+                            objectName,
                             this.DrawingContext.View,
                             this.DrawingContext.Origin,
                             this.DrawingContext.PlanetName);

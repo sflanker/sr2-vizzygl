@@ -5,7 +5,6 @@ using System.Linq;
 using System.Xml.Linq;
 using Assets.Scripts.Flight.MapView.Interfaces;
 using Assets.Scripts.Objects;
-using Jundroo.ModTools;
 using Jundroo.ModTools.Serialization.Xml;
 using ModApi.Craft;
 using ModApi.Craft.Parts;
@@ -61,6 +60,11 @@ namespace Assets.Scripts.Vizzy {
             set => this.Data.View = value;
         }
 
+        public Byte[] Sprite {
+            get => this.Data.Sprite;
+            set => this.Data.Sprite = value;
+        }
+
         public IReadOnlyDictionary<String, VizzyGLObject> Objects {
             get {
                 lock (this.Data.Objects) {
@@ -105,6 +109,16 @@ namespace Assets.Scripts.Vizzy {
                 } else {
                     Debug.LogWarning($"Unable to remove object, not found: {objectName}");
                 }
+            }
+        }
+
+        public void RemoveAllObjects() {
+            lock (this.Data.Objects) {
+                foreach (var obj in this.Data.Objects.Values) {
+                    obj.DestroyGameObject();
+                }
+
+                this.Data.Objects.Clear();
             }
         }
 
@@ -189,6 +203,7 @@ namespace Assets.Scripts.Vizzy {
                 Game.Instance.SceneManager.SceneLoaded -= SceneManagerOnSceneLoaded;
                 Game.Instance.SceneManager.SceneUnloaded -= SceneManagerOnSceneUnloaded;
             }
+
             if (Game.Instance.FlightScene != null) {
                 Game.Instance.FlightScene.Initialized -= FlightSceneOnInitialized;
             }
@@ -326,6 +341,32 @@ namespace Assets.Scripts.Vizzy {
             set => this._view = value;
         }
 
+        [SerializeField] [PartModifierProperty]
+        private String _spriteData;
+
+        private Byte[] _sprite;
+
+        public Byte[] Sprite {
+            get {
+                lock (this) {
+                    if (this._sprite == null && this._spriteData != null) {
+                        this._sprite = Convert.FromBase64String(this._spriteData);
+                    }
+
+                    return this._sprite;
+                }
+            }
+            set {
+                lock (this) {
+                    this._sprite = value;
+                    this._spriteData =
+                        this._sprite != null ?
+                            Convert.ToBase64String(this._sprite) :
+                            null;
+                }
+            }
+        }
+
         // Used for deserialization
         public VizzyGLContextData() {
             this.InspectorEnabled = false;
@@ -383,6 +424,7 @@ namespace Assets.Scripts.Vizzy {
 
                         if (objectTypes.TryGetValue(name, out var objectType)) {
                             var obj = (VizzyGLObject)_serializer.Deserialize(element, objectType);
+                            obj.OnDeserialized(element);
                             this.Objects[obj.Name] = obj;
                         } else {
                             Debug.LogWarning($"Unable to deserialize unrecognized VizzyGLObject type: '{name}'");

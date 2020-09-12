@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Xml.Linq;
 using Assets.Scripts.Behaviours;
 using Assets.Scripts.Flight.MapView;
 using Assets.Scripts.Vizzy;
@@ -39,6 +40,8 @@ namespace Assets.Scripts.Objects {
         public GameObject GameObject { get; private set; }
         public ICraftScript Craft { get; private set; }
         protected Renderer Renderer { get; private set; }
+
+        protected virtual Boolean SupportsColor => true;
 
         public event EventHandler<OffsetChangedEventArgs> OriginOffsetChanged;
 
@@ -150,21 +153,27 @@ namespace Assets.Scripts.Objects {
             }
         }
 
+        protected internal virtual void OnDeserialized(XElement element) {
+        }
+
         protected virtual void OnGameObjectCreated() {
             Debug.Log($"VizzyGL Object Initialized (Origin: {this._originPositionType} + {this._originOffset})");
 
-            this.Renderer.material = new Material(DefaultMaterial) {
-                color = new Color(
-                    this._color.x,
-                    this._color.y,
-                    this._color.z,
-                    this._opacity
-                )
-            };
+            if (this.SupportsColor) {
+                this.Renderer.material = new Material(DefaultMaterial) {
+                    color = new Color(
+                        this._color.x,
+                        this._color.y,
+                        this._color.z,
+                        this._opacity
+                    )
+                };
+            }
 
             if (this.View == ViewType.Map) {
                 this.GameObject.layer = VizzyGLContext.ObjectContainerProvider.Crafts.gameObject.layer;
             }
+
             this.GameObject.transform.localScale = this._scale;
             this.GameObject.transform.localRotation = Quaternion.Euler(this._rotation);
 
@@ -183,8 +192,12 @@ namespace Assets.Scripts.Objects {
                 case PositionType.PlanetPCI:
                     behavior = this.GameObject.AddComponent<PCIPositionBehaviour>();
                     break;
-                case PositionType.PlanetLatLogAsl:
-                    behavior = this.GameObject.AddComponent<PlanetLatLogAslPositionBehaviour>();
+                case PositionType.PlanetLatLonAsl:
+                    behavior = this.GameObject.AddComponent<PlanetLatLonAslPositionBehaviour>();
+                    break;
+                case PositionType.PlanetLatLonAgl:
+                    Debug.Log($"Attaching LatLonAglPositionBehaviour to {this._name}");
+                    behavior = this.GameObject.AddComponent<PlanetLatLonAglPositionBehaviour>();
                     break;
                 default:
                     Debug.LogWarning($"Unrecognized origin type: {this._originPositionType}");
@@ -240,7 +253,8 @@ namespace Assets.Scripts.Objects {
                 case PositionType.CraftPCI:
                     return Game.Instance.FlightScene.FlightState.CraftNodes.SingleOrDefault(c => c.NodeId == this._originCraftId);
                 case PositionType.PlanetPCI:
-                case PositionType.PlanetLatLogAsl:
+                case PositionType.PlanetLatLonAsl:
+                case PositionType.PlanetLatLonAgl:
                     return Game.Instance.FlightScene.FlightState.RootNode.FindPlanet(this._originPlanetName);
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -265,6 +279,7 @@ namespace Assets.Scripts.Objects {
         CraftLocal = 1,
         CraftPCI,
         PlanetPCI,
-        PlanetLatLogAsl
+        PlanetLatLonAsl,
+        PlanetLatLonAgl
     }
 }

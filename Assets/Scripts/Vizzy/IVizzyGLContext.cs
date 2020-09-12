@@ -21,10 +21,14 @@ namespace Assets.Scripts.Vizzy {
 
         ViewType View { get; set; }
 
+        Byte[] Sprite { get; set; }
+
         IReadOnlyDictionary<String, VizzyGLObject> Objects { get; }
 
         void AddObject(VizzyGLObject gameObject);
 
         void RemoveObject(String name);
+
+        void RemoveAllObjects();
     }
 }

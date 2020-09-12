@@ -8,7 +8,11 @@ namespace Assets.Scripts.Vizzy {
 
         protected override void ExecuteImpl(IThreadContext context) {
             var name = this.GetExpression(0).Evaluate(context).TextValue;
-            this.DrawingContext.RemoveObject(name);
+            if (!String.IsNullOrWhiteSpace(name)) {
+                this.DrawingContext.RemoveObject(name);
+            } else {
+                this.DrawingContext.RemoveAllObjects();
+            }
         }
     }
 }

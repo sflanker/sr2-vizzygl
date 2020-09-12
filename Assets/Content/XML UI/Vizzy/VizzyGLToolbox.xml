@@ -11,9 +11,11 @@
         <style id="gl-set-rotation" color="GLContextInstruction" format="set rotation (0)" tooltip="Set the rotation to use when drawing new shapes." />
         <style id="gl-set-origin" color="GLContextInstruction" format="set origin [origin] (0)" tooltip="Set the type of origin to use when drawing new shapes either by planet name or craft id." />
         <style id="gl-set-view" color="GLContextInstruction" format="set target view [view]" tooltip="Set the target view to use when drawing new shapes." />
+        <style id="gl-load-sprite" color="GLContextInstruction" format="load sprite (0)" tooltip="Loads a PNG image from the specified URL." />
         <style id="gl-draw-primitive" color="GLDrawInstruction" format="draw [type] with offset (0) as (1)" tooltip="Adds a new primitive to the flight scene or map view." />
+        <style id="gl-draw-sprite" color="GLDrawInstruction" format="draw sprite with offset (0) as (1)" tooltip="Adds a new sprite to the flight scene or map view." />
         <style id="gl-update-property" color="GLDrawInstruction" format="update object (0) property [prop] to (1)" tooltip="Updates a property of an existing primitive by name." />
-        <style id="gl-remove-object" color="GLDrawInstruction" format="remove object (0)" tooltip="Remove an object by name from the flight scene or map view." />
+        <style id="gl-remove-object" color="GLDrawInstruction" format="remove object (0)" tooltip="Remove an object by name from the flight scene or map view. If no object name is specified, all objects will be removed." />
     </Styles>
     <Categories>
         <Category name="Vizzy GL" icon="VizzyGL/Sprites/VizzyGL">
@@ -36,10 +38,19 @@
             <SetContextProperty style="gl-set-view" prop="view" view="game">
             </SetContextProperty>
 
+            <LoadSprite style="gl-load-sprite">
+                <Constant text="file:///path-to-png-image" />
+            </LoadSprite>
+
             <DrawPrimitive style="gl-draw-primitive" type="sphere">
                 <Constant vector="0,0,0" />
                 <Constant text="name" />
             </DrawPrimitive>
+
+            <DrawSprite style="gl-draw-sprite">
+                <Constant vector="0,0,0" />
+                <Constant text="name" />
+            </DrawSprite>
 
             <UpdateObject style="gl-update-property" prop="color">
                 <Constant text="name" />

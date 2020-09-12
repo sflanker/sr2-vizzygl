@@ -46,7 +46,9 @@ namespace Assets.Scripts {
         static Mod() {
             ModExpressionAndInstructions = new Dictionary<string, (Type, Func<ProgramNode>)> {
                 { SetContextPropertyInstruction.XmlName, (typeof(SetContextPropertyInstruction), () => new SetContextPropertyInstruction()) },
+                { LoadSpriteInstruction.XmlName, (typeof(LoadSpriteInstruction), () => new LoadSpriteInstruction()) },
                 { DrawPrimitiveInstruction.XmlName, (typeof(DrawPrimitiveInstruction), () => new DrawPrimitiveInstruction()) },
+                { DrawSpriteInstruction.XmlName, (typeof(DrawSpriteInstruction), () => new DrawSpriteInstruction()) },
                 { UpdateObjectInstruction.XmlName, (typeof(UpdateObjectInstruction), () => new UpdateObjectInstruction()) },
                 { RemoveObjectInstruction.XmlName, (typeof(RemoveObjectInstruction), () => new RemoveObjectInstruction()) },
             };

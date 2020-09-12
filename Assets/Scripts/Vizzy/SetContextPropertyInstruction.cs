@@ -43,7 +43,12 @@ namespace Assets.Scripts.Vizzy {
                         new ListItemInfo(
                             "planet-lat-long",
                             "Planet Lat/Long/ASL",
-                            "Position objects relative to a planet with an offset in Lat/Long/ASL coordinates.",
+                            "Position objects relative to a planet with an offset in Lat/Long/ASL (Sea Level Altitude) coordinates.",
+                            ListItemInfoType.Text),
+                        new ListItemInfo(
+                            "planet-lat-long-agl",
+                            "Planet Lat/Long/AGL",
+                            "Position objects relative to a planet with an offset in Lat/Long/AGL (Ground Level Altitude) coordinates.",
                             ListItemInfoType.Text)
                     };
                 case "view":
@@ -88,6 +93,7 @@ namespace Assets.Scripts.Vizzy {
                     if (listId != "origin") {
                         Debug.Log($"Property<->ListId mismatch, expecting 'origin' but '{listId}' was specified.");
                     }
+
                     this._origin = value.ToLowerInvariant();
                     switch (this._origin) {
                         case "craft":
@@ -100,7 +106,10 @@ namespace Assets.Scripts.Vizzy {
                             this.Origin = PositionType.PlanetPCI;
                             break;
                         case "planet-lat-long":
-                            this.Origin = PositionType.PlanetLatLogAsl;
+                            this.Origin = PositionType.PlanetLatLonAsl;
+                            break;
+                        case "planet-lat-long-agl":
+                            this.Origin = PositionType.PlanetLatLonAgl;
                             break;
                         default:
                             this.Origin = default;
@@ -116,6 +125,7 @@ namespace Assets.Scripts.Vizzy {
                     if (listId != "view") {
                         Debug.Log($"Property<->ListId mismatch, expecting 'view' but '{listId}' was specified.");
                     }
+
                     this._view = value.ToLowerInvariant();
                     switch (this._view) {
                         case "game":
@@ -203,9 +213,11 @@ namespace Assets.Scripts.Vizzy {
 
                                 this.DrawingContext.CraftId = matchingCraft?.NodeId ?? -1;
                             }
+
                             break;
                         case PositionType.PlanetPCI:
-                        case PositionType.PlanetLatLogAsl:
+                        case PositionType.PlanetLatLonAsl:
+                        case PositionType.PlanetLatLonAgl:
                             this.DrawingContext.PlanetName =
                                 this.GetExpression(0).Evaluate(context).TextValue;
                             break;

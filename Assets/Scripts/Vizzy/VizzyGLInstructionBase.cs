@@ -8,8 +8,7 @@ namespace Assets.Scripts.Vizzy {
 
         public override ProgramInstruction Execute(IThreadContext context) {
             this.BeforeExecute(context);
-            this.ExecuteImpl(context);
-            return base.Execute(context);
+            return this.ExecuteAndReturnNextImpl(context);
         }
 
         protected virtual void BeforeExecute(IThreadContext context) {
@@ -35,6 +34,13 @@ namespace Assets.Scripts.Vizzy {
             }
         }
 
-        protected abstract void ExecuteImpl(IThreadContext context);
+        protected virtual ProgramInstruction ExecuteAndReturnNextImpl(IThreadContext context) {
+            this.ExecuteImpl(context);
+            return this.Next;
+        }
+
+        protected virtual void ExecuteImpl(IThreadContext context) {
+            //  No-op
+        }
     }
 }

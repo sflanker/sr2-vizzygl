@@ -1,23 +1,22 @@
-using System;
 using Assets.Scripts.Objects;
 using Assets.Scripts.Vizzy;
 using ModApi.Flight.Sim;
 using UnityEngine;
 
 namespace Assets.Scripts.Behaviours {
-    public class PlanetLatLogAslPositionBehaviour : OriginOffsetPositionBehaviour {
+    public class PlanetLatLonAglPositionBehaviour : OriginOffsetPositionBehaviour {
         private IPlanetNode parent;
 
         protected Vector3d OriginOffsetPlanetVector {
             get {
-                var latLongAsl = this.VizzyGlObject.OriginOffset;
+                var latLongAgl = this.VizzyGlObject.OriginOffset;
                 return this.parent.SurfaceVectorToPlanetVector(
                     this.parent.GetSurfacePosition(
                         // What 0.01745329 ???
-                        latLongAsl.x * 0.01745329,
-                        latLongAsl.y * 0.01745329,
-                        AltitudeType.AboveSeaLevel,
-                        latLongAsl.z)
+                        latLongAgl.x * 0.01745329,
+                        latLongAgl.y * 0.01745329,
+                        AltitudeType.AboveGroundLevel,
+                        latLongAgl.z)
                 );
             }
         }

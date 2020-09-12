@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: -1366777262, guid: c37b925f2b4978342b2e0b83a8fa404a, type: 3}
   m_Name: ModData
   m_EditorClassIdentifier: 
-  _assemblies: []
+  _assemblies:
+  - VizzyGL.dll
   _author: sflanker
   _description: A mod for drawing 3d visual elements within the game view.
   _loadPriority: 1000
@@ -26,10 +27,11 @@ MonoBehaviour:
   _steamTitle: 
   _steamVisibility: 0
   _versionMajor: 0
-  _versionMinor: 1
+  _versionMinor: 2
   _partCategories: []
   _parts: []
   _partStyleExtensions: []
   _partTextureStyles: []
   _persistentObjects: []
-  _uiResourceDatabases: []
+  _uiResourceDatabases:
+  - {fileID: 11400000, guid: 90cce2d83ec6c4a77bad2fd89037a86a, type: 2}
