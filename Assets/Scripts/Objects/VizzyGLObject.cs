@@ -280,6 +280,9 @@ namespace Assets.Scripts.Objects {
         CraftPCI,
         PlanetPCI,
         PlanetLatLonAsl,
-        PlanetLatLonAgl
+        PlanetLatLonAgl,
+
+        [Obsolete("This was a typo")]
+        PlanetLatLogAsl = PlanetLatLonAsl
     }
 }

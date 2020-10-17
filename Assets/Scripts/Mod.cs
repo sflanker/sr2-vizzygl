@@ -33,7 +33,7 @@ namespace Assets.Scripts {
                         ModApi.Common.Game.Instance.UserInterface.ResourceDatabase.GetResource<TextAsset>("VizzyGL/Vizzy/VizzyGLToolbox");
                     if (vizzyGLToolboxXml != null) {
                         _vizzyGLToolbox =
-                            new VizzyToolbox(XElement.Parse(vizzyGLToolboxXml.text));
+                            new VizzyToolbox(XElement.Parse(vizzyGLToolboxXml.text), false);
                     } else {
                         Debug.LogError("VizzyGL: The VizzyGLToolbox Resource Was Not Found.");
                     }
